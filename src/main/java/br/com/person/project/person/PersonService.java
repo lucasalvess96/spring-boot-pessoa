@@ -1,5 +1,8 @@
 package br.com.person.project.person;
 
+import br.com.person.project.address.AddressDto;
+import br.com.person.project.address.AddressEntity;
+import br.com.person.project.address.AddressRepository;
 import br.com.person.project.comon.EntityNotFoundExceptiion;
 import br.com.person.project.person.DTO.PersonCreateDto;
 import br.com.person.project.person.DTO.PersonDetailDto;
@@ -14,8 +17,11 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
-    public PersonService(PersonRepository personRepository) {
+    private final AddressRepository addressRepository;
+
+    public PersonService(PersonRepository personRepository, AddressRepository addressRepository) {
         this.personRepository = personRepository;
+        this.addressRepository = addressRepository;
     }
 
     public Page<PersonListDto> listPerson(Pageable pageable){
@@ -25,7 +31,9 @@ public class PersonService {
 
     public Optional<PersonDetailDto> detailPerson(Long id){
         Optional<PersonEntity> personEntity = personRepository.findById(id);
-        return personEntity.map(entity -> Optional.of(new PersonDetailDto(entity))).orElseThrow(() -> new EntityNotFoundExceptiion("id não encontrado"));
+        return personEntity
+                .map(entity -> Optional.of(new PersonDetailDto(entity)))
+                .orElseThrow(() -> new EntityNotFoundExceptiion("id não encontrado"));
     }
 
     public PersonCreateDto createPerson(PersonCreateDto personCreateDto){
@@ -35,11 +43,21 @@ public class PersonService {
         personEntity.setCpf(personCreateDto.getCpf());
         personEntity.setEmail(personCreateDto.getEmail());
         personEntity.setPassword(personCreateDto.getPassword());
+
+        AddressEntity addressEntity = new AddressEntity();
+        AddressDto addressDto = new AddressDto();
+
+        addressEntity.setStreet(addressDto.getStreet());
+        addressEntity.setNumber(addressDto.getNumber());
+        addressEntity.setCity(addressDto.getCity());
+
+        personEntity.setAddress(addressRepository.save(addressEntity));
+
         return new PersonCreateDto(personRepository.save(personEntity));
     }
 
-    public PersonCreateDto updatePerson(Long id, PersonCreateDto personCreateDto){
-        PersonEntity personEntity = personRepository.findById(id).get();
+    public PersonCreateDto updatePerson(Long id, PersonCreateDto personCreateDto) {
+        PersonEntity personEntity = personRepository.findById(id).orElseThrow(() -> new EntityNotFoundExceptiion("id não encontrado"));
         personEntity.setName(personCreateDto.getName());
         personEntity.setAge(personCreateDto.getAge());
         personEntity.setCpf(personCreateDto.getCpf());
@@ -48,8 +66,10 @@ public class PersonService {
         return new PersonCreateDto(personRepository.save(personEntity));
     }
 
-    public void deletePerson(Long id){
-         personRepository.deleteById(id);
-
+    public void deletePerson(Long id) {
+        if(personRepository.existsById(id)){
+            personRepository.deleteById(id);
+        }
+        throw new EntityNotFoundExceptiion("id não encontrado");
     }
 }

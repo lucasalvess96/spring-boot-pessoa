@@ -1,5 +1,6 @@
 package br.com.person.project.person.DTO;
 
+import br.com.person.project.address.AddressEntity;
 import br.com.person.project.person.PersonEntity;
 import jakarta.validation.constraints.*;
 
@@ -26,6 +27,8 @@ public class PersonCreateDto {
     @Size(min = 3, max = 16)
     private String password;
 
+    private AddressEntity addressEntity;
+
     public PersonCreateDto() {
     }
 
@@ -35,6 +38,7 @@ public class PersonCreateDto {
         this.cpf = personEntity.getCpf();
         this.email = personEntity.getEmail();
         this.password = personEntity.getPassword();
+        this.addressEntity = new AddressEntity();
     }
 
     public String getName() {

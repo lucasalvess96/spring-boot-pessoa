@@ -1,9 +1,7 @@
 package br.com.person.project.person;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import br.com.person.project.address.AddressEntity;
+import jakarta.persistence.*;
 
 @Entity
 public class PersonEntity {
@@ -15,16 +13,21 @@ public class PersonEntity {
     private String email;
     private String password;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ADDRESS_ID")
+    private AddressEntity address;
+
     public PersonEntity() {
     }
 
-    public PersonEntity(Long id, String name, String age, String cpf, String email, String password) {
+    public PersonEntity(Long id, String name, String age, String cpf, String email, String password, AddressEntity address) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.cpf = cpf;
         this.email = email;
         this.password = password;
+        this.address = address;
     }
 
     public Long getId() {
@@ -73,5 +76,13 @@ public class PersonEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public AddressEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressEntity address) {
+        this.address = address;
     }
 }
