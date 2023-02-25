@@ -7,6 +7,7 @@ import br.com.person.project.comon.EntityNotFoundExceptiion;
 import br.com.person.project.person.DTO.PersonCreateDto;
 import br.com.person.project.person.DTO.PersonDetailDto;
 import br.com.person.project.person.DTO.PersonListDto;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,14 +46,11 @@ public class PersonService {
         personEntity.setPassword(personCreateDto.getPassword());
 
         AddressEntity addressEntity = new AddressEntity();
-        AddressDto addressDto = new AddressDto();
-
-        addressEntity.setStreet(addressDto.getStreet());
-        addressEntity.setNumber(addressDto.getNumber());
-        addressEntity.setCity(addressDto.getCity());
+        addressEntity.setStreet(personCreateDto.getAddressEntity().getStreet());
+        addressEntity.setNumber(personCreateDto.getAddressEntity().getNumber());
+        addressEntity.setCity(personCreateDto.getAddressEntity().getCity());
 
         personEntity.setAddress(addressRepository.save(addressEntity));
-
         return new PersonCreateDto(personRepository.save(personEntity));
     }
 
@@ -64,6 +62,11 @@ public class PersonService {
         personEntity.setEmail(personCreateDto.getEmail());
         personEntity.setPassword(personCreateDto.getPassword());
         return new PersonCreateDto(personRepository.save(personEntity));
+    }
+
+    public Page<PersonEntity> searchPerson(String name, Pageable page) {
+        if(StringUtils.isBlank(name)) return personRepository.findAll(page);
+        return personRepository.findAllByNameContainingIgnoreCase(name, page);
     }
 
     public void deletePerson(Long id) {

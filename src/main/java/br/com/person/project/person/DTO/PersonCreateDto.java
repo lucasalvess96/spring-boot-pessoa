@@ -38,7 +38,7 @@ public class PersonCreateDto {
         this.cpf = personEntity.getCpf();
         this.email = personEntity.getEmail();
         this.password = personEntity.getPassword();
-        this.addressEntity = new AddressEntity();
+        this.addressEntity = personEntity.getAddress();
     }
 
     public String getName() {
@@ -79,5 +79,13 @@ public class PersonCreateDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public AddressEntity getAddressEntity() {
+        return addressEntity;
+    }
+
+    public void setAddressEntity(AddressEntity addressEntity) {
+        this.addressEntity = addressEntity;
     }
 }

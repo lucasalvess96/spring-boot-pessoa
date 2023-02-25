@@ -6,6 +6,7 @@ import br.com.person.project.person.DTO.PersonListDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -51,6 +53,15 @@ public class PersonController {
         PersonCreateDto createDto = personService.updatePerson(id, personCreateDto);
         if (createDto != null) return new ResponseEntity<>(createDto, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<Page<PersonEntity>> search(@RequestParam(required = false) String name, Pageable pageable) {
+        ArrayList<PersonEntity> searchEntity = new ArrayList<>();
+        personService.searchPerson(name, pageable).forEach(solicitacao ->
+                searchEntity.add(new PersonEntity()));
+        return new ResponseEntity<>(new PageImpl<>(searchEntity, pageable,
+                personService.verificaQuantidadeSolicitacao()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
