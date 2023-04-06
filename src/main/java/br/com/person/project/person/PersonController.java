@@ -25,7 +25,7 @@ public class PersonController {
         this.personService = service;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<Page<PersonListDto>> list(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(personService.listPerson(pageable));
     }
