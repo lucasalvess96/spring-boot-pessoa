@@ -1,6 +1,8 @@
 package br.com.person.project.person;
 
 import br.com.person.project.address.AddressEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +16,7 @@ public class PersonEntity {
     private String password;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "ADDRESS_ID")
     private AddressEntity address;
 

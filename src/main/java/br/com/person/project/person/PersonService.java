@@ -1,6 +1,5 @@
 package br.com.person.project.person;
 
-import br.com.person.project.address.AddressDto;
 import br.com.person.project.address.AddressEntity;
 import br.com.person.project.address.AddressRepository;
 import br.com.person.project.comon.EntityNotFoundExceptiion;
@@ -11,6 +10,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -25,19 +25,17 @@ public class PersonService {
         this.addressRepository = addressRepository;
     }
 
-    public Page<PersonListDto> listPerson(Pageable pageable){
+    public Page<PersonListDto> listPerson(Pageable pageable) {
         Page<PersonEntity> personEntityPage = personRepository.findAll(pageable);
         return personEntityPage.map(PersonListDto::new);
     }
 
-    public Optional<PersonDetailDto> detailPerson(Long id){
+    public Optional<PersonDetailDto> detailPerson(Long id) {
         Optional<PersonEntity> personEntity = personRepository.findById(id);
-        return personEntity
-                .map(entity -> Optional.of(new PersonDetailDto(entity)))
-                .orElseThrow(() -> new EntityNotFoundExceptiion("id não encontrado"));
+        return personEntity.map(entity -> Optional.of(new PersonDetailDto(entity))).orElseThrow(() -> new EntityNotFoundExceptiion("Usuário não encontrado"));
     }
 
-    public PersonCreateDto createPerson(PersonCreateDto personCreateDto){
+    public PersonCreateDto createPerson(PersonCreateDto personCreateDto) {
         PersonEntity personEntity = new PersonEntity();
         personEntity.setName(personCreateDto.getName());
         personEntity.setAge(personCreateDto.getAge());
@@ -55,7 +53,7 @@ public class PersonService {
     }
 
     public PersonCreateDto updatePerson(Long id, PersonCreateDto personCreateDto) {
-        PersonEntity personEntity = personRepository.findById(id).orElseThrow(() -> new EntityNotFoundExceptiion("id não encontrado"));
+        PersonEntity personEntity = personRepository.findById(id).orElseThrow(() -> new EntityNotFoundExceptiion("Usuário não encontrado"));
         personEntity.setName(personCreateDto.getName());
         personEntity.setAge(personCreateDto.getAge());
         personEntity.setCpf(personCreateDto.getCpf());
@@ -65,14 +63,15 @@ public class PersonService {
     }
 
     public Page<PersonEntity> searchPerson(String name, Pageable page) {
-        if(StringUtils.isBlank(name)) return personRepository.findAll(page);
-        return personRepository.findAllByNameContainingIgnoreCase(name, page);
+        if (StringUtils.isBlank(name)) return personRepository.findAll(page);
+        return personRepository.findByNameContainingIgnoreCase(name, page);
     }
 
     public void deletePerson(Long id) {
-        if(personRepository.existsById(id)){
+        if (personRepository.existsById(id)) {
             personRepository.deleteById(id);
+        }else {
+            throw new EntityNotFoundExceptiion("Usuário não encontrado");
         }
-        throw new EntityNotFoundExceptiion("id não encontrado");
     }
 }

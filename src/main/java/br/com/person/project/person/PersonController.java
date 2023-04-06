@@ -6,15 +6,12 @@ import br.com.person.project.person.DTO.PersonListDto;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +25,7 @@ public class PersonController {
         this.personService = service;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<Page<PersonListDto>> list(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(personService.listPerson(pageable));
     }
@@ -44,7 +41,7 @@ public class PersonController {
     public ResponseEntity<PersonCreateDto> create(@RequestBody @Valid PersonCreateDto personCreateDto){
         PersonCreateDto createDto = personService.createPerson(personCreateDto);
         if (createDto != null) return new ResponseEntity<>(createDto, HttpStatus.CREATED);
-        return new ResponseEntity<>(createDto, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/update/{id}")
@@ -55,13 +52,13 @@ public class PersonController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping("/search")
     public ResponseEntity<Page<PersonEntity>> search(@RequestParam(required = false) String name, Pageable pageable) {
-        ArrayList<PersonEntity> searchEntity = new ArrayList<>();
-        personService.searchPerson(name, pageable).forEach(solicitacao ->
-                searchEntity.add(new PersonEntity()));
-        return new ResponseEntity<>(new PageImpl<>(searchEntity, pageable,
-                personService.verificaQuantidadeSolicitacao()), HttpStatus.OK);
+        Page<PersonEntity> personEntityPage = personService.searchPerson(name, pageable);
+        if(personEntityPage != null) {
+            return new ResponseEntity<>(personEntityPage, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")

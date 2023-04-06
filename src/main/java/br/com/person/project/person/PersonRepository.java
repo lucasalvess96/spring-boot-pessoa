@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
-    Page<PersonEntity> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<PersonEntity> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

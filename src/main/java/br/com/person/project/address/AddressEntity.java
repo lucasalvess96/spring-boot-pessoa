@@ -1,6 +1,8 @@
 package br.com.person.project.address;
 
 import br.com.person.project.person.PersonEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +15,8 @@ public class AddressEntity {
     private long number;
     private String city;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "address")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "address", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private PersonEntity personEntity;
 
     public AddressEntity() {
