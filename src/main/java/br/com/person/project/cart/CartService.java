@@ -2,9 +2,9 @@ package br.com.person.project.cart;
 
 import br.com.person.project.cart.Dto.CartDto;
 import br.com.person.project.cart.Dto.CreateCartDto;
-import br.com.person.project.items.Items;
 import br.com.person.project.items.ItemsRepository;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,13 +24,12 @@ public class CartService {
         cart.setTotal(createCartDto.getTotal());
         cart.setName(createCartDto.getName());
         cart.setItemsList(createCartDto.getItemsEntity());
-
+//        cart.setItemsList(createCartDto.getItemsEntity().forEach(items -> createCartDto.setItemsEntity()));
         return new CreateCartDto(cartRepository.save(cart));
     }
 
     public Page<CartDto> cartList(Pageable pageable) {
         Page<CartEntity> cartEntityPage = cartRepository.findAll(pageable);
-        Page<Items> entity2Page = itemsRepository.findAll(pageable);
         return cartEntityPage.map(CartDto::new);
     }
 }

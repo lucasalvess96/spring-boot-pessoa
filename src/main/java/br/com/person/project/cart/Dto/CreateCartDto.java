@@ -4,8 +4,8 @@ import br.com.person.project.cart.CartEntity;
 import br.com.person.project.items.Items;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CreateCartDto {
 
@@ -15,7 +15,7 @@ public class CreateCartDto {
     @NotBlank(message = "Nome nao deve está vazio")
     private String name;
 
-    private List<Items> itemsEntity = new ArrayList<>();
+    private Set<Items> itemsEntity = new HashSet<>();
 
     public CreateCartDto() {
     }
@@ -51,11 +51,11 @@ public class CreateCartDto {
         this.name = name;
     }
 
-    public List<Items> getItemsEntity() {
+    public Set<Items> getItemsEntity() {
         return itemsEntity;
     }
 
-    public void setItemsEntity(List<Items> itemsEntity) {
+    public void setItemsEntity(Set<Items> itemsEntity) {
         this.itemsEntity = itemsEntity;
     }
 }

@@ -1,10 +1,11 @@
 package br.com.person.project.cart;
 
 import br.com.person.project.items.Items;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="CART")
@@ -19,13 +20,14 @@ public class CartEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<Items> itemsList = new ArrayList<>();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Items> itemsList = new HashSet<>();
 
     public CartEntity() {
     }
 
-    public CartEntity(long id, double total, String name, List<Items> itemsList) {
+    public CartEntity(long id, double total, String name, Set<Items> itemsList) {
         this.id = id;
         this.total = total;
         this.name = name;
@@ -56,11 +58,11 @@ public class CartEntity {
         this.name = name;
     }
 
-    public List<Items> getItemsList() {
+    public Set<Items> getItemsList() {
         return itemsList;
     }
 
-    public void setItemsList(List<Items> itemsList) {
+    public void setItemsList(Set<Items> itemsList) {
         this.itemsList = itemsList;
     }
 }

@@ -34,8 +34,6 @@ public class StudentService {
 
     public Page<StudentListDto> studentList(Pageable pageable) {
         Page<StudentEntity> studentEntityPagE = studentRepository.findAll(pageable);
-        Page<CourseEntity> courseEntities = courseRepository.findAll(pageable);
-
         return studentEntityPagE.map(StudentListDto::new);
     }
 }

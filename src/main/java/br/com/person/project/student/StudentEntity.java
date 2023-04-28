@@ -1,6 +1,8 @@
 package br.com.person.project.student;
 
 import br.com.person.project.course.CourseEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

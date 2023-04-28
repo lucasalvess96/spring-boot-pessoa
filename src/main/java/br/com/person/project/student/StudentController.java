@@ -29,7 +29,6 @@ public class StudentController {
     @Transactional
     public ResponseEntity<StudentCreateDto>create(@RequestBody @Valid StudentCreateDto studentCreateDto) {
         StudentCreateDto studentCreateDto1 = studentService.studentCreateDto(studentCreateDto);
-
         if(studentCreateDto1 != null) return new ResponseEntity<>(studentCreateDto1, HttpStatus.CREATED);
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
